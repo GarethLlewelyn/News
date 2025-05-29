@@ -1,0 +1,137 @@
+# 🏁 Sprint 1 & 2 Combined — Financial News AI Pipeline
+
+## 🎯 Goal
+
+Build the foundational ingestion pipeline, basic NLP (sentiment + NER), pre-signal filters, and relevance classification logic. These modules will be production-ready, containerized, and export clean, structured messages to storage or Kafka for downstream model use.
+
+---
+
+## 📦 Modules to Deliver
+
+### 1. `ingestion/` — News Collection
+**Goal**: Continuously fetch, parse, and normalise news articles.
+
+**Steps**:
+- [ ] Use `news-please` or `newspaper3k` for scraping HTML articles.
+- [ ] Use `feedparser` to ingest RSS from:
+  - Yahoo Finance (`https://finance.yahoo.com/rss/`)
+  - Reuters
+  - Investing.com
+- [ ] Each article is parsed into:
+  ```json
+  {
+    "url": "...",
+    "title": "...",
+    "body": "...",
+    "publish_ts": "ISO 8601 UTC",
+    "source": "Yahoo/Reuters/etc"
+  }
+ Normalise timestamps to UTC ms.
+
+ Implement retry/backoff logic and rate limits.
+
+ De-duplication by (canonical_url + publish_ts) using Redis Bloom filter.
+
+2. filtering/ — Pre-Signal Noise Suppression
+Goal: Remove low-signal, duplicate, or irrelevant articles before further NLP.
+
+Steps:
+
+ Suppress duplicates (same title/body) via hash comparison.
+
+ Drop articles from low-trust sources via whitelist JSON.
+
+ Drop headlines with fewer than N tokens or no ORG NER entities.
+
+ Output to filtered_articles for NLP pipeline.
+
+3. nlp/ — Sentiment + NER Extraction
+Goal: Extract sentiment and named entities for each article.
+
+Steps:
+
+ Load FinBERT base (CPU or CUDA if available).
+
+ Extract:
+
+Positive/negative sentiment scores.
+
+NER (ORG, GPE) via spaCy (en_core_web_sm).
+
+Basic topic tags via TextRank/RAKE.
+
+ Output schema:
+
+json
+Always show details
+
+Copy
+{
+  "entity_id": "AAPL",
+  "sent_pos": 0.6,
+  "sent_neg": 0.0,
+  "ner": ["Apple", "Tim Cook"],
+  "topics": ["earnings", "guidance"]
+}
+4. relevance/ — Horizon Classifier
+Goal: Classify each article as short_term, long_term, or non_relevant.
+
+Steps:
+
+ Rule-based parser detects temporal expressions:
+
+short-term: “today”, “next week”, “announced”
+
+long-term: “2026”, “strategic roadmap”
+
+ Assign relevance_score = 0.0–1.0 and label:
+
+json
+Always show details
+
+Copy
+{
+  "relevance_label": "short_term",
+  "relevance_score": 0.92
+}
+ Save label alongside sentiment output.
+
+5. storage/ — Local Output + Kafka (Optional)
+Goal: Persist structured articles for downstream model training.
+
+Steps:
+
+ Save processed articles to data/processed/*.jsonl
+
+ Optional: emit to Kafka topic news_features
+
+ Optional: ingest into Postgres or TimescaleDB
+
+6. 🧪 Testing
+ Unit test all pipelines with sample RSS feed & 2 static HTML articles.
+
+ Use Cursor /gen-tests for coverage on NLP + relevance logic.
+
+ CLI mode for ingest --backfill YYYY-MM-DD for validation.
+
+7. 🐳 Docker Container
+ Write Dockerfile with all dependencies:
+
+spaCy, transformers, Redis, feedparser, aiohttp, newspaper3k
+
+ Expose FastAPI GET /status + /sample
+
+ Local dev volume mounts: /data for article dumps
+
+✅ Completion Criteria
+ Articles are scraped, deduplicated, filtered, and parsed
+
+ Sentiment and NER extracted using FinBERT + spaCy
+
+ Relevance label attached to each article
+
+ Outputs saved locally and available for model ingestion
+
+ Docker image build passes and runs in container
+
+

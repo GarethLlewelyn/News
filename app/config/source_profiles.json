@@ -1,0 +1,84 @@
+{
+    "reuters.com": {
+        "weight": 0.9,
+        "category": "Tier 1 News Agency",
+        "notes": "High trust, global coverage."
+    },
+    "cnbc.com": {
+        "weight": 0.85,
+        "category": "Financial News Network",
+        "notes": "Reputable, focus on US markets."
+    },
+    "ft.com": {
+        "name": "Financial Times",
+        "weight": 0.88,
+        "category": "Tier 1 Financial News",
+        "notes": "High trust, global financial focus."
+    },
+    "bloomberg.com": {
+        "weight": 0.92,
+        "category": "Tier 1 Financial News",
+        "notes": "High trust, comprehensive financial data and news."
+    },
+    "wsj.com": {
+        "name": "Wall Street Journal",
+        "weight": 0.9,
+        "category": "Tier 1 Financial News",
+        "notes": "High trust, US focused, business and finance."
+    },
+    "investing.com": {
+        "weight": 0.7,
+        "category": "Financial Portal",
+        "notes": "Broad coverage, includes user-generated content caution."
+    },
+    "finance.yahoo.com": {
+        "weight": 0.75,
+        "category": "Financial Portal",
+        "notes": "Good for aggregated news, variable quality of original content."
+    },
+    "marketwatch.com": {
+        "weight": 0.8,
+        "category": "Financial News Site",
+        "notes": "Timely market news, owned by Dow Jones."
+    },
+    "seekingalpha.com": {
+        "weight": 0.65,
+        "category": "Crowdsourced Investment Research",
+        "notes": "Variable quality, opinions mixed with news. Use with caution for factual reporting."
+    },
+    "thestreet.com": {
+        "weight": 0.6,
+        "category": "Financial News & Commentary",
+        "notes": "Mix of news and strong opinions."
+    },
+    "forbes.com": {
+        "weight": 0.7,
+        "category": "Business Magazine & News",
+        "notes": "Generally reputable, but includes contributed content of varying quality."
+    },
+    "businessinsider.com": {
+        "weight": 0.65,
+        "category": "Business News Site",
+        "notes": "Often quick with news, can be sensationalist at times."
+    },
+    "coindesk.com": {
+        "weight": 0.75,
+        "category": "Cryptocurrency News",
+        "notes": "Leading site for crypto news, generally reliable in that niche."
+    },
+    "benzinga.com": {
+        "weight": 0.7,
+        "category": "Financial News & Analysis",
+        "notes": "Fast news, sometimes lacks depth."
+    },
+    "someblog.com": {
+        "weight": 0.3,
+        "category": "Personal Blog",
+        "notes": "Low trust, example of a less reputable source."
+    },
+    "randomnewsblog.net": {
+        "weight": 0.2,
+        "category": "Unknown Aggregator",
+        "notes": "Very low trust, example of a source to generally ignore."
+    }
+} 

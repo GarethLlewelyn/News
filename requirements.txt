@@ -1,0 +1,49 @@
+# Core Application & Web Framework
+fastapi>=0.100.0,<0.111.0 # Keeping within a minor version range for stability
+uvicorn[standard]>=0.23.0,<0.28.0
+pydantic>=2.0.0,<3.0.0
+pydantic-settings>=2.0.0,<2.2.0
+python-dotenv>=1.0.0,<1.1.0 # For .env file loading, complements pydantic-settings
+
+# NLP & Text Processing
+spacy>=3.5.0,<3.8.0
+# Note: spaCy models like en_core_web_sm should be downloaded in Dockerfile or via CLI
+# transformers>=4.30.0,<4.39.0 # For FinBERT or other transformer models (optional for now if using mocks)
+# torch>=2.0.0,<2.3.0 # Dependency for transformers/some spacy models (CPU version typically)
+
+# Data Storage & Messaging
+redis>=5.0.0,<5.1.0
+kafka-python>=2.0.0,<2.1.0
+
+# Graph & Network Analysis
+networkx>=3.0,<3.3
+
+# Utilities
+requests>=2.30.0,<2.32.0
+PyYAML>=6.0,<6.1
+
+# Testing (optional, can be in a dev-requirements.txt)
+pytest>=7.0.0,<8.1.0
+pytest-cov>=4.0.0,<5.0.0
+httpx>=0.24.0,<0.28.0 # For async testing with FastAPI TestClient
+
+# Existing from original file (evaluate if still needed for current scope)
+feedparser # If direct RSS ingestion is part of this service
+newspaper3k # For article scraping (if not just receiving body text)
+# pytextrank # Alternative topic modeling/summarization
+# redisbloom # Was for deduplication, check if current syndication logic needs it
+# lxml # newspaper3k dependency, keep if newspaper3k is used
+
+# Let's add lxml explicitly as it is often needed and good to pin
+lxml>=4.9.0,<5.2.0
+
+# Ensure numpy is present as it's a common underlying dependency for ML/NLP libs
+numpy>=1.24.0,<1.27.0
+
+# Add FinBERT model via transformers, e.g. ProsusAI/finbert
+# We'll need to download spacy models separately, e.g., en_core_web_sm
+redisbloom # For ingestion deduplication (replaces redis-py-bloom-filter, depends on redis which is already listed)
+lxml[html_clean] # Required by newspaper3k for HTML cleaning 
+
+# For deep learning models used by transformers/spacy
+torch # Add PyTorch for NLP model dependencies (CPU version) 

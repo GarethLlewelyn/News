@@ -1,0 +1,62 @@
+{
+    "AAPL": {
+        "name": "Apple Inc.",
+        "ticker": "AAPL",
+        "sector": "Technology",
+        "industry": "Consumer Electronics",
+        "peers": ["MSFT", "GOOGL", "SAMSUNG"],
+        "suppliers": ["TSMC", "QCOM", "FOXCONN"],
+        "customers": [],
+        "etf_inclusion": ["QQQ", "SPY"]
+    },
+    "MSFT": {
+        "name": "Microsoft Corp.",
+        "ticker": "MSFT",
+        "sector": "Technology",
+        "industry": "Software - Infrastructure",
+        "peers": ["AAPL", "GOOGL", "ORCL"],
+        "suppliers": [],
+        "customers": [],
+        "etf_inclusion": ["QQQ", "SPY"]
+    },
+    "GOOGL": {
+        "name": "Alphabet Inc. (C Shares)",
+        "ticker": "GOOGL",
+        "sector": "Communication Services",
+        "industry": "Internet Content & Information",
+        "peers": ["AAPL", "MSFT", "META"],
+        "suppliers": [],
+        "customers": [],
+        "etf_inclusion": ["QQQ", "SPY"]
+    },
+    "TSMC": {
+        "name": "Taiwan Semiconductor Manufacturing Company Ltd.",
+        "ticker": "TSM",
+        "sector": "Technology",
+        "industry": "Semiconductors",
+        "peers": ["INTC", "SAMSUNG"],
+        "suppliers": [],
+        "customers": ["AAPL", "QCOM", "NVDA"],
+        "etf_inclusion": []
+    },
+    "NVDA": {
+        "name": "NVIDIA Corporation",
+        "ticker": "NVDA",
+        "sector": "Technology",
+        "industry": "Semiconductors",
+        "peers": ["AMD", "INTC"],
+        "suppliers": ["TSMC"],
+        "customers": [],
+        "etf_inclusion": ["QQQ", "SMH"]
+    },
+    "AMD": {
+        "name": "Advanced Micro Devices, Inc.",
+        "ticker": "AMD",
+        "sector": "Technology",
+        "industry": "Semiconductors",
+        "peers": ["NVDA", "INTC"],
+        "suppliers": ["TSMC"],
+        "customers": [],
+        "etf_inclusion": ["QQQ", "SMH"]
+    }
+} 

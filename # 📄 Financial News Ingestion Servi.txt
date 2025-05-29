@@ -1,0 +1,81 @@
+# 📄 Financial News Ingestion Service — Project Summary
+
+## Overview
+This service is responsible for ingesting, parsing, filtering, and processing financial news articles in real-time or near-real-time. It acts as a standalone Docker microservice and feeds structured news features, causal relationships, and propagated event signals into Kafka topics or local storage for later use by downstream AI models (e.g., stock price prediction systems).
+
+## Core Objectives
+- Continuously ingest articles from public RSS feeds and scrape HTML pages
+- Clean and deduplicate incoming articles
+- Apply advanced filters for quality control (syndication, clickbait, source trust, entity density)
+- Extract sentiment, named entities, and topic tags
+- Identify causal relationships within news content
+- Propagate event signals across related entities (sectors, supply chain)
+- Assign a relevance label indicating short-term or long-term impact
+- Emit structured JSON objects to Kafka or store locally
+
+## Achievements So Far
+The foundational pipeline has been significantly enhanced with new processing capabilities and a more robust infrastructure:
+
+### ✅ Implemented:
+- **Ingestion** from Yahoo Finance, CNBC, and Financial Times using `feedparser` and full-article scraping via `newspaper3k`.
+- **Deduplication** using Redis (for syndicated content hashing).
+- **Advanced Filtering** logic to remove duplicates, syndicated content, clickbait headlines, low-trust sources, and articles not meeting entity/token density requirements.
+- **NLP Pipeline** that performs:
+  - Sentiment analysis (currently mock FinBERT, placeholder for real model)
+  - NER with spaCy (`en_core_web_sm`)
+  - Topic tagging (currently mock RAKE, placeholder for real model)
+  - **Causality Extraction**: Identifies cause-effect relationships using spaCy's dependency parser and pattern matching.
+  - **Cross-Sector Event Propagation**: Links news to related entities (sector, supply chain) using a static map and `NetworkX`, calculating propagated sentiment with decay.
+- **Relevance classification** (placeholder/conceptual, integrated into `NewsProcessorService` structure).
+- **Output to Kafka**:
+  - Causal relationships are sent to `news_causality` Kafka topic.
+  - Propagated event signals are sent to `news_relations` Kafka topic.
+- **Storage**: Initial plan for `.jsonl` files for main processed news (Kafka output for main news pending).
+- **API endpoints** (FastAPI):
+  - `GET /status`: Provides service health and component status.
+  - `POST /process-article`: Accepts a raw article, processes it through the full pipeline (filtering, NLP, causality, propagation), and triggers Kafka outputs.
+  - `POST /run-pipeline-cycle`: Simulates processing a batch of articles.
+- **Dockerization**: Fully Dockerized service with `docker-compose` managing the FastAPI application, Redis, **Zookeeper, and Kafka** containers.
+- **Centralized Configuration & Logging**: Implemented `app/config.py` using Pydantic `BaseSettings` (loads from `.env`) and standardized Python `logging` across all modules. FastAPI uses `lifespan` context manager for resource management.
+
+### 🔧 In Progress / Planned:
+- Adding RSS feeds from Reuters and Investing.com
+- Implementing robust retry and rate-limiting logic for ingestion.
+- Emitting main structured news events (post-NLP, pre-causality/propagation) to a dedicated Kafka topic.
+- Optional storage expansion to TimescaleDB or Postgres for main news data.
+- Replacing mock FinBERT and RAKE models with actual model loading and inference.
+- Comprehensive unit and integration tests for all new components.
+
+## Pipeline Stages
+1.  **Ingestion**: Pull from RSS feeds and HTML sources.
+2.  **Initial Filtering & Advanced Filtering**:
+    - Deduplication (syndicated content via Redis hash checking).
+    - Clickbait headline detection.
+    - Source trust scoring.
+    - Entity and token density checks.
+3.  **Core NLP**: Run sentiment analysis, NER, and topic tagging. Store token and entity counts.
+4.  **Causality Extraction**: Process text with spaCy to find cause-effect relationships. Output to `news_causality` Kafka topic.
+5.  **Event Propagation**: Use identified entities and sentiment to propagate signals through a `NetworkX` graph. Output to `news_relations` Kafka topic.
+6.  **Relevance Classification**: (Conceptual) Assign a horizon label.
+7.  **Storage/Output**:
+    - Causality data to Kafka.
+    - Propagated relations data to Kafka.
+    - Main enriched news data planned for Kafka topic / local `.jsonl` / Database.
+
+
+## Output Schema Example (for main enriched news, prior to causality/propagation)
+```json
+{
+  "entity_id": "AAPL", // Example primary entity
+  "sentiment": {"positive": 0.7, "negative": 0.1, "neutral": 0.2, "sentiment_label": "positive"},
+  "topics": ["earnings", "forecast"],
+  "relevance_label": "short_term", // Conceptual
+  "source": "reuters.com",
+  "published_ts": 1717190000000,
+  "headline": "...",
+  "body": "...",
+  "token_count": 150,
+  "org_entity_count": 3,
+  "entities_ner": [["Apple", "ORG"], ["Tim Cook", "PERSON"]]
+  // Causality and Propagation data are sent to separate Kafka topics
+}
